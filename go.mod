@@ -1,4 +1,4 @@
-module dameng
+module github.com/nagae-memooff/dameng
 
 go 1.14
 

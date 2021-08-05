@@ -5,7 +5,7 @@ import (
 	"time"
 
 	// "database/sql"
-	"dameng"
+	"github.com/nagae-memooff/dameng"
 	"gorm.io/gorm"
 )
 
