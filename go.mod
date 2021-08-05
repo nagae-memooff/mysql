@@ -1,8 +1,8 @@
-module gorm.io/driver/mysql
+module dameng
 
 go 1.14
 
 require (
-	github.com/go-sql-driver/mysql v1.5.0
+	gitee.com/chunanyong/dm v1.8.0
 	gorm.io/gorm v1.20.8
 )

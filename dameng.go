@@ -1,13 +1,14 @@
-package mysql
+package dameng
 
 import (
-	"context"
+	// "context"
 	"database/sql"
 	"fmt"
 	"math"
 	"strings"
 
-	_ "github.com/go-sql-driver/mysql"
+	_ "gitee.com/chunanyong/dm"
+	// _ "github.com/go-sql-driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/callbacks"
 	"gorm.io/gorm/clause"
@@ -42,11 +43,11 @@ func New(config Config) gorm.Dialector {
 }
 
 func (dialector Dialector) Name() string {
-	return "mysql"
+	return "dm"
 }
 
 func (dialector Dialector) Initialize(db *gorm.DB) (err error) {
-	ctx := context.Background()
+	// ctx := context.Background()
 
 	// register callbacks
 	callbacks.RegisterDefaultCallbacks(db, &callbacks.Config{})
@@ -54,7 +55,7 @@ func (dialector Dialector) Initialize(db *gorm.DB) (err error) {
 	db.Callback().Update().Replace("gorm:update", Update)
 
 	if dialector.DriverName == "" {
-		dialector.DriverName = "mysql"
+		dialector.DriverName = "dm"
 	}
 
 	if dialector.DefaultDatetimePrecision == nil {
@@ -71,31 +72,31 @@ func (dialector Dialector) Initialize(db *gorm.DB) (err error) {
 		}
 	}
 
-	if !dialector.Config.SkipInitializeWithVersion {
-		var version string
-		err = db.ConnPool.QueryRowContext(ctx, "SELECT VERSION()").Scan(&version)
-		if err != nil {
-			return err
-		}
+	// if !dialector.Config.SkipInitializeWithVersion {
+	// 	var version string
+	// 	err = db.ConnPool.QueryRowContext(ctx, "SELECT VERSION()").Scan(&version)
+	// 	if err != nil {
+	// 		return err
+	// 	}
 
-		if strings.Contains(version, "MariaDB") {
-			dialector.Config.DontSupportRenameIndex = true
-			dialector.Config.DontSupportRenameColumn = true
-			dialector.Config.DontSupportForShareClause = true
-		} else if strings.HasPrefix(version, "5.6.") {
-			dialector.Config.DontSupportRenameIndex = true
-			dialector.Config.DontSupportRenameColumn = true
-			dialector.Config.DontSupportForShareClause = true
-		} else if strings.HasPrefix(version, "5.7.") {
-			dialector.Config.DontSupportRenameColumn = true
-			dialector.Config.DontSupportForShareClause = true
-		} else if strings.HasPrefix(version, "5.") {
-			dialector.Config.DisableDatetimePrecision = true
-			dialector.Config.DontSupportRenameIndex = true
-			dialector.Config.DontSupportRenameColumn = true
-			dialector.Config.DontSupportForShareClause = true
-		}
-	}
+	// 	if strings.Contains(version, "MariaDB") {
+	// 		dialector.Config.DontSupportRenameIndex = true
+	// 		dialector.Config.DontSupportRenameColumn = true
+	// 		dialector.Config.DontSupportForShareClause = true
+	// 	} else if strings.HasPrefix(version, "5.6.") {
+	// 		dialector.Config.DontSupportRenameIndex = true
+	// 		dialector.Config.DontSupportRenameColumn = true
+	// 		dialector.Config.DontSupportForShareClause = true
+	// 	} else if strings.HasPrefix(version, "5.7.") {
+	// 		dialector.Config.DontSupportRenameColumn = true
+	// 		dialector.Config.DontSupportForShareClause = true
+	// 	} else if strings.HasPrefix(version, "5.") {
+	// 		dialector.Config.DisableDatetimePrecision = true
+	// 		dialector.Config.DontSupportRenameIndex = true
+	// 		dialector.Config.DontSupportRenameColumn = true
+	// 		dialector.Config.DontSupportForShareClause = true
+	// 	}
+	// }
 
 	for k, v := range dialector.ClauseBuilders() {
 		db.ClauseBuilders[k] = v
@@ -188,19 +189,20 @@ func (dialector Dialector) BindVarTo(writer clause.Writer, stmt *gorm.Statement,
 }
 
 func (dialector Dialector) QuoteTo(writer clause.Writer, str string) {
-	writer.WriteByte('`')
-	if strings.Contains(str, ".") {
-		for idx, str := range strings.Split(str, ".") {
-			if idx > 0 {
-				writer.WriteString(".`")
-			}
-			writer.WriteString(str)
-			writer.WriteByte('`')
-		}
-	} else {
-		writer.WriteString(str)
-		writer.WriteByte('`')
-	}
+	writer.WriteString(str)
+	// writer.WriteByte('`')
+	// if strings.Contains(str, ".") {
+	// 	for idx, str := range strings.Split(str, ".") {
+	// 		if idx > 0 {
+	// 			writer.WriteString(".`")
+	// 		}
+	// 		writer.WriteString(str)
+	// 		writer.WriteByte('`')
+	// 	}
+	// } else {
+	// 	writer.WriteString(str)
+	// 	writer.WriteByte('`')
+	// }
 }
 
 func (dialector Dialector) Explain(sql string, vars ...interface{}) string {
